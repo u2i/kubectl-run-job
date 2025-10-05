@@ -4,7 +4,8 @@ WORKDIR /build
 COPY go.mod ./
 COPY main.go ./
 RUN go mod tidy
-RUN CGO_ENABLED=0 go build -o kubectl-run-job .
+# Force rebuild - bypassing Go build cache
+RUN CGO_ENABLED=0 go build -a -o kubectl-run-job .
 
 FROM alpine:latest
 
