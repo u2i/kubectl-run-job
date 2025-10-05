@@ -1,0 +1,15 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '-t'
+  - 'europe-west1-docker.pkg.dev/c-retrotool-nonprod/retrotool-images/kubectl-run-job:latest'
+  - '.'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'push'
+  - 'europe-west1-docker.pkg.dev/c-retrotool-nonprod/retrotool-images/kubectl-run-job:latest'
+
+images:
+- 'europe-west1-docker.pkg.dev/c-retrotool-nonprod/retrotool-images/kubectl-run-job:latest'
