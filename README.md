@@ -24,6 +24,7 @@ A Kubernetes job runner for GKE that provides `kubectl run`-like functionality w
 - `KUBECTL_RUN_REGION` (default: `europe-west1`): GKE cluster region
 - `KUBECTL_RUN_CLUSTER` (default: `retrotool-cluster`): GKE cluster name
 - `KUBECTL_RUN_ENTRYPOINT`: Optional entrypoint override
+- `KUBECTL_RUN_TIMEOUT_MINUTES` (default: `20`): Job completion timeout in minutes
 
 ### Examples
 

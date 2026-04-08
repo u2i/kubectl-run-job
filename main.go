@@ -175,7 +175,8 @@ func run() error {
 	defer watcher.Stop()
 
 	var jobFailed bool
-	timeout := time.After(20 * time.Minute)
+	timeoutMinutes := getTimeoutMinutes()
+	timeout := time.After(time.Duration(timeoutMinutes) * time.Minute)
 	for {
 		select {
 		case event := <-watcher.ResultChan():
@@ -211,6 +212,20 @@ func getEnvOrDefault(key, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+func getTimeoutMinutes() int {
+	timeoutStr := getEnvOrDefault("KUBECTL_RUN_TIMEOUT_MINUTES", "20")
+	timeout := 20
+	if _, err := fmt.Sscanf(timeoutStr, "%d", &timeout); err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: invalid KUBECTL_RUN_TIMEOUT_MINUTES value '%s', using default 20 minutes\n", timeoutStr)
+		return 20
+	}
+	if timeout <= 0 {
+		fmt.Fprintf(os.Stderr, "Warning: KUBECTL_RUN_TIMEOUT_MINUTES must be positive, using default 20 minutes\n")
+		return 20
+	}
+	return timeout
 }
 
 func getClusterConfig(ctx context.Context, project, location, clusterName string) (*rest.Config, error) {
