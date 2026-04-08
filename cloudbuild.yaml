@@ -3,13 +3,14 @@ steps:
   args:
   - 'build'
   - '-t'
-  - 'europe-west1-docker.pkg.dev/c-retrotool-nonprod/retrotool-images/kubectl-run-job:latest'
+  - 'europe-west1-docker.pkg.dev/shared-images-nonprod/docker-images/kubectl-run-job:latest'
+  - '-t'
+  - 'europe-west1-docker.pkg.dev/shared-images-nonprod/docker-images/kubectl-run-job:${SHORT_SHA}'
   - '.'
 
-- name: 'gcr.io/cloud-builders/docker'
-  args:
-  - 'push'
-  - 'europe-west1-docker.pkg.dev/c-retrotool-nonprod/retrotool-images/kubectl-run-job:latest'
-
 images:
-- 'europe-west1-docker.pkg.dev/c-retrotool-nonprod/retrotool-images/kubectl-run-job:latest'
+- 'europe-west1-docker.pkg.dev/shared-images-nonprod/docker-images/kubectl-run-job:latest'
+- 'europe-west1-docker.pkg.dev/shared-images-nonprod/docker-images/kubectl-run-job:${SHORT_SHA}'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
