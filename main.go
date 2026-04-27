@@ -15,8 +15,8 @@ import (
 	"golang.org/x/oauth2/google"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -73,6 +73,15 @@ func run() error {
 			BackoffLimit:            &backoff,
 			TTLSecondsAfterFinished: &ttl,
 			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Annotations: map[string]string{
+						// Prevent the cluster autoscaler from evicting the
+						// runner pod for node scale-down. With BackoffLimit=0
+						// any eviction terminally fails the job, even when
+						// the underlying command would have succeeded.
+						"cluster-autoscaler.kubernetes.io/safe-to-evict": "false",
+					},
+				},
 				Spec: corev1.PodSpec{
 					RestartPolicy: corev1.RestartPolicyNever,
 					NodeSelector: map[string]string{
